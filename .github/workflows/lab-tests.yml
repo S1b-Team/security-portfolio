@@ -12,6 +12,7 @@ jobs:
         working-directory: lab/app
     env:
       FIX: "1"
+      # Throwaway lab-only key; not used anywhere real.
       APP_KEY: "base64:tUQV6x7r+eLvLr/HxI/ryZt/lkeEzFVyeDGChYrKDAI="
       WEBHOOK_TOKEN: "lab-webhook-token-change-me"
       WEBHOOK_ALLOW_HOSTS: "example.com,httpbin.org"
@@ -24,6 +25,8 @@ jobs:
           php-version: "8.4"
           extensions: mbstring, pdo_sqlite, sqlite3
           coverage: none
+      - name: Ensure Laravel writable directories
+        run: mkdir -p bootstrap/cache storage/framework/{cache,sessions,views,testing} storage/logs
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
       - name: Run Pest security regressions

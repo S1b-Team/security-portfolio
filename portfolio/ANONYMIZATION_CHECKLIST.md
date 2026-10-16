@@ -1,6 +1,6 @@
 # Anonymization Checklist
 
-Every real identifier found in the source material (incident PDF, `/workspace/SEC/area/`, and the consolidated incident notes used as background) and the generic substitute used in the drafts. I verified none of the real values appear in `CASE_STUDY.md` or `CV_BULLET.md`.
+Every real identifier found in the source incident report and supporting background material, and the generic substitute used in the published write-ups. I verified none of the real values appear in the case study (`case-studies/backoffice-compromise.md`) or related portfolio material.
 
 ## Companies / organizations
 | Real (in sources) | Substitute in drafts |
@@ -50,7 +50,7 @@ Every real identifier found in the source material (incident PDF, `/workspace/SE
 - Only one address class retained as a technical concept: the **cloud instance metadata address** (a well-known fixed address, not client-specific). No client IPs retained.
 
 ## Leakage check
-- Ran a scan of the drafts for the real IPs, the real email/domain strings, ticket IDs, commit hashes, company names, person names, and file/artifact names from the sources: **no matches** in `CASE_STUDY.md` or `CV_BULLET.md`.
+- Ran a scan of the drafts for the real IPs, the real email/domain strings, ticket IDs, commit hashes, company names, person names, and file/artifact names from the sources: **no matches** in the published case study.
 - No third-party product or vendor brand mentions in the deliverables.
 
 ## Residual risk notes

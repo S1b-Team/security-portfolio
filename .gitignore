@@ -19,7 +19,8 @@ lab/app/public/build/
 # Runtime artifacts
 lab/app/storage/logs/*.log
 lab/app/storage/framework/views/*.php
-lab/app/storage/framework/testing/
+lab/app/storage/framework/testing/*
+!lab/app/storage/framework/testing/.gitignore
 lab/app/storage/framework/cache/data/*
 !lab/app/storage/framework/cache/data/.gitignore
 lab/app/bootstrap/cache/*.php
