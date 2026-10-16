@@ -1,0 +1,32 @@
+# Sample detection — lab / portfolio use only (CrowdSec / Wazuh style)
+title: Unusual outbound HTTP shortly after file upload
+id: lab-det-003-outbound-after-upload
+status: experimental
+description: >
+  Correlates a successful file upload with an unusual outbound HTTP(S) fetch
+  from the same app container within a short window — pattern seen when an
+  uploaded implant or SSRF webhook is used for follow-on access.
+  Lab illustration only; tune thresholds for real estates separately.
+type: correlation
+window: 5m
+references:
+  - ATT&CK T1105 (Ingress Tool Transfer)
+  - ATT&CK T1071.001 (Application Layer Protocol: Web Protocols)
+detection:
+  stage_upload:
+    event: upload_accepted
+  stage_outbound:
+    event: webhook_fetch
+    http_code: 200
+    url|contains:
+      - '169.254.'
+      - 'metadata'
+  condition: stage_upload followed_by stage_outbound within window
+actions_hint:
+  - alert
+  - capture audit.log slice
+level: high
+tags:
+  - attack.command_and_control
+  - attack.t1071.001
+  - lab.defensive

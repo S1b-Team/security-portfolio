@@ -1,0 +1,32 @@
+# Internal working material (not for publication)
+/BRIEF.md
+/CV_BULLET.md
+/ANONYMIZATION_CHECKLIST.md
+*.tar.gz
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Dependencies / builds
+lab/app/vendor/
+node_modules/
+lab/app/public/build/
+
+# Runtime artifacts
+lab/app/storage/logs/*.log
+lab/app/storage/framework/views/*.php
+lab/app/storage/framework/testing/
+lab/app/storage/framework/cache/data/*
+!lab/app/storage/framework/cache/data/.gitignore
+lab/app/bootstrap/cache/*.php
+*.sqlite
+*.log
+.phpunit.cache/
+.phpunit.result.cache
+.DS_Store
+.idea/
+.vscode/

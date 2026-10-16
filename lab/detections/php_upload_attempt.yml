@@ -1,0 +1,36 @@
+# Sample detection — lab / portfolio use only
+title: PHP or executable upload attempt against backoffice
+id: lab-det-001-php-upload
+status: experimental
+description: >
+  Detects HTTP upload requests whose filename ends in .php / .phtml / .phar
+  or carries a PHP Content-Type. Illustrative Sigma-style rule for the local lab.
+references:
+  - ATT&CK T1505.003 (Server Software Component: Web Shell)
+logsource:
+  category: webserver
+  product: nginx
+detection:
+  selection_ext:
+    cs-uri-stem|contains: '/upload'
+    sc-status:
+      - 415
+      - 403
+    cs-uri-query|contains:
+      - '.php'
+      - '.phtml'
+      - '.phar'
+  selection_audit:
+    event: upload_rejected
+    reason:
+      - disallowed_extension
+      - php_content_detected
+      - extension_not_allowlisted
+  condition: selection_ext or selection_audit
+falsepositives:
+  - Legitimate rejection noise during security testing of this lab
+level: high
+tags:
+  - attack.persistence
+  - attack.t1505.003
+  - lab.defensive

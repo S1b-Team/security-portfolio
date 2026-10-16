@@ -1,0 +1,71 @@
+# Isolated defensive security lab — localhost / compose network only.
+# Laravel 12 sample + FAKE metadata sidecar. Never point at production.
+services:
+  app-fixed:
+    build: ./app
+    container_name: lab-app-fixed
+    ports:
+      - "8080:8080"
+    environment:
+      FIX: "1"
+      APP_KEY: "base64:tUQV6x7r+eLvLr/HxI/ryZt/lkeEzFVyeDGChYrKDAI="
+      WEBHOOK_TOKEN: "lab-webhook-token-change-me"
+      WEBHOOK_ALLOW_HOSTS: "example.com,httpbin.org"
+      DB_CONNECTION: sqlite
+      DB_DATABASE: /var/www/database/database.sqlite
+    volumes:
+      - upload_data_fixed:/var/www/storage/app/private
+    networks: [labnet]
+    depends_on: [mock-metadata]
+
+  app-vulnerable:
+    build: ./app
+    container_name: lab-app-vulnerable
+    ports:
+      - "8081:8080"
+    environment:
+      FIX: "0"
+      APP_KEY: "base64:tUQV6x7r+eLvLr/HxI/ryZt/lkeEzFVyeDGChYrKDAI="
+      DB_CONNECTION: sqlite
+      DB_DATABASE: /var/www/database/database.sqlite
+    volumes:
+      - upload_data_vuln:/var/www/storage/app/private
+    networks: [labnet]
+    extra_hosts:
+      - "169.254.169.254:172.30.0.169"
+    depends_on: [mock-metadata]
+
+  mock-metadata:
+    build: ./mock-metadata
+    container_name: lab-mock-metadata
+    networks:
+      labnet:
+        ipv4_address: 172.30.0.169
+
+  tests:
+    build: ./app
+    working_dir: /var/www
+    environment:
+      FIX: "1"
+      APP_KEY: "base64:tUQV6x7r+eLvLr/HxI/ryZt/lkeEzFVyeDGChYrKDAI="
+      WEBHOOK_TOKEN: "lab-webhook-token-change-me"
+      WEBHOOK_ALLOW_HOSTS: "example.com,httpbin.org"
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ":memory:"
+    entrypoint: ["sh", "-c", "composer install --no-interaction && ./vendor/bin/pest --filter=LabSecurity"]
+    profiles: ["test"]
+    networks: [labnet]
+    volumes:
+      - ./app:/var/www
+
+networks:
+  labnet:
+    driver: bridge
+    name: lab-defensive-net
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+
+volumes:
+  upload_data_fixed:
+  upload_data_vuln:

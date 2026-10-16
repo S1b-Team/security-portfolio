@@ -1,0 +1,30 @@
+name: Lab tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lab/app
+    env:
+      FIX: "1"
+      APP_KEY: "base64:tUQV6x7r+eLvLr/HxI/ryZt/lkeEzFVyeDGChYrKDAI="
+      WEBHOOK_TOKEN: "lab-webhook-token-change-me"
+      WEBHOOK_ALLOW_HOSTS: "example.com,httpbin.org"
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ":memory:"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: mbstring, pdo_sqlite, sqlite3
+          coverage: none
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Run Pest security regressions
+        run: vendor/bin/pest --filter=LabSecurity
